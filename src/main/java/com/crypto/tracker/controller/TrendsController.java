@@ -1,5 +1,6 @@
 package com.crypto.tracker.controller;
 
+import com.crypto.tracker.model.TrendsClassificationResponse;
 import com.crypto.tracker.service.TrendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +16,9 @@ public class TrendsController {
     private TrendService trendService;
 
     @GetMapping()
-    public Float getClassification(
-            @RequestParam(name = "coin", required = true ) String coin
-    ){
-
+    public TrendsClassificationResponse getClassification(
+            @RequestParam(name = "coin", required = true) String coin){
         Float finalScore = trendService.analysePost(coin,5);
-        System.out.println(finalScore);
-        return finalScore;
+        return new TrendsClassificationResponse(finalScore);
     }
 }

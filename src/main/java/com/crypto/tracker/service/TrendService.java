@@ -14,19 +14,20 @@ public class TrendService {
     @Autowired
     private ChatGPTService chatGPTService;
 
+    @Autowired
+    private SentimentService sentimentService;
+
     public Float analysePost(String query, Integer limit){
 
-        String posts = redditService.redditPostGenerator(query, limit);
+        List<String> posts = redditService.redditPostGenerator(query, limit);
 
-        List<String> allPosts =  chatGPTService.responseEvaluation(posts);
+//        List<String> allPosts =  chatGPTService.responseEvaluation(posts);
+        List<Float> probabilities = sentimentService.responseEvaluation(posts);
 
-        Float score = (float) 0;
-
-        for(String post:allPosts){
-            if(post.equals("negative")) score-=1;
-            else if(post.equals("positive")) score+=1;
+        float score = 0.0f;
+        for (Float probability : probabilities){
+            score = score + probability;
         }
-
         return score/5;
     }
 
